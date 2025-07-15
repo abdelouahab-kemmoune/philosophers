@@ -24,7 +24,7 @@ void *safe_malloc(size_t bytes)
 
 static void handle_mutex_error(int status, t_opcode opcode)
 {
-    if (status = 0)
+    if (status == 0)
         return;
     if (status == EINVAL && (LOCK == opcode || UNLOCK == opcode || DESTROY == opcode))
         error_exit("The value specified by mutex is invalid.");
@@ -56,7 +56,7 @@ void safe_mutex_handle(t_mtx *mutex, t_opcode opcode)
 
 static void handle_thread_error(int status, t_opcode opcode)
 {
-    if (status = 0)
+    if (status == 0)
         return;
     if (status == EAGAIN)
         error_exit("No resources to create another thread.");

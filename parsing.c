@@ -12,8 +12,6 @@
 
 #include "philo.h"
 
-
-
 static inline bool is_digit(char c)
 {
     return (c >= '0' && c <= '9');
@@ -46,8 +44,6 @@ static const char *valid_input(const char *str)
     return (number);
 }
 
-
-
 static long ft_atol(const char *str)
 {
     long num;
@@ -60,8 +56,6 @@ static long ft_atol(const char *str)
         error_exit("The input is too long, INT_MAX is the limit!");
     return (num);
 }
-
-
 
 void parse_input(t_table *table, char **av)
 {
