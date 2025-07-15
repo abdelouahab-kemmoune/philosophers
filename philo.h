@@ -34,7 +34,7 @@
 
 
 //write macro
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 
 //*************** enums **********************//
@@ -147,6 +147,7 @@ void parse_input(t_table *table, char **av);
 
 //****************dinner *************/
 void dinner_start(t_table *table);
+void thinking(t_philo *philo, bool pre_simulation);
 
 
 
@@ -174,6 +175,7 @@ void safe_mutex_handle(t_mtx *mutex, t_opcode opcode);
 void wait_all_threads(t_table *table);
 bool all_threads_running(t_mtx *mutex, long *threads, long philo_nbr);
 void increase_long(t_mtx *mutex, long *value);
+void de_synchronize_philos(t_philo *philo);
 
 
 //****************getters_setters *************/

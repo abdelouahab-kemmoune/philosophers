@@ -12,9 +12,25 @@
 
 #include "philo.h"
 
-static void thinking(t_philo *philo)
+void thinking(t_philo *philo, bool pre_simulation)
 {
+    long t_eat;
+    long t_sleep;
+    long t_think;
+
+    if (!pre_simulation)
+        write_status(THINKING, philo, DEBUG_MODE);
     write_status(THINKING, philo, DEBUG_MODE);
+    // if the system is even we dont care
+    if (philo->table->philo_nbr % 2 == 0)
+        return ;
+    // odd, not always fair
+    t_eat = philo->table->time_to_eat;
+    t_sleep = philo->table->time_to_sleep;
+    t_think = t_eat *2 - t_sleep; //available time to think
+    if (t_think < 0)
+        t_think = 0;
+    precise_usleep(t_think * 0.42, philo->table);
 }
 
 void    *lone_philo(void *data)
@@ -30,7 +46,6 @@ void    *lone_philo(void *data)
         usleep(200);
     return (NULL);
 }
-
 
 static void eat(t_philo *philo)
 {
@@ -51,7 +66,6 @@ static void eat(t_philo *philo)
     safe_mutex_handle(&philo->second_fork->fork, UNLOCK);
 }
 
-
 void *dinner_simulation(void *data)
 {
     t_philo *philo;
@@ -63,21 +77,19 @@ void *dinner_simulation(void *data)
 
     increase_long(&philo->table->table_mutex,
             &philo->table->threads_rununing_nbr);
-
+    de_synchronize_philos(philo);
     while (!simulation_finished(philo->table))
     {
         if (get_bool(&philo->philo_mutex, &philo->full))
             break ;
         eat(philo);
-        
         write_status(SLEEPING, philo, DEBUG_MODE);
         precise_usleep(philo->table->time_to_sleep, philo->table);
-        thinking(philo);
+        thinking(philo, false);
     }
 
     return (NULL);
 }
-
 
 void dinner_start(t_table *table)
 {
