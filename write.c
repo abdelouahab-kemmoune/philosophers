@@ -12,47 +12,23 @@
 
 #include "philo.h"
 
-
-static void write_status_debug(t_philo_status status, t_philo *philo, long elapsed)
+void	write_status(t_philo_status status, t_philo *philo)
 {
-    if (TAKE_FIRST_FORK == status && !simulation_finished(philo->table))
-        printf(M"%-6ld"RST" %d has taken the 1 fork🍽️​\n", elapsed, philo->id);
-    else if (TAKE_SECOND_FORK == status && !simulation_finished(philo->table))
-        printf(M"%-6ld"RST" %d has taken the 2 fork🍽️​\n", elapsed, philo->id);
-    else if (EATING == status && !simulation_finished(philo->table))
-        printf(G"%-6ld"RST" %d is eating🍔​\n", elapsed, philo->id);
-    else if (SLEEPING == status && !simulation_finished(philo->table))
-        printf(Y"%-6ld"RST" %d is sleeping​😴​\n", elapsed, philo->id);
-    else if (THINKING == status && !simulation_finished(philo->table))
-        printf(C"%-6ld"RST" %d is thinking🤔​\n", elapsed, philo->id);
-    else if (DIED == status)
-        printf(RED"%-6ld"RST" %d died💀​\n", elapsed, philo->id);
-}
+	long	current_time;
 
-
-void write_status(t_philo_status status, t_philo *philo, bool debug)
-{
-    long elapsed;
-
-    elapsed = gettime(MILLISECOND) - philo->table->start_simulation;
-    if (get_bool(&philo->philo_mutex, &philo->full))
-        return;
-    safe_mutex_handle(&philo->table->write_mutex, LOCK);
-    if (debug)
-        write_status_debug(status, philo, elapsed);
-    else
-    {
-        if ((TAKE_FIRST_FORK == status || TAKE_SECOND_FORK == status)
-            && !simulation_finished(philo->table))
-            printf(W"%-6ld"RST" %d has taken a fork\n", elapsed, philo->id);
-        else if (EATING == status && !simulation_finished(philo->table))
-            printf(W"%-6ld"RST" %d is eating\n", elapsed, philo->id);
-        else if (SLEEPING == status && !simulation_finished(philo->table))
-            printf(W"%-6ld"RST" %d is sleeping\n", elapsed, philo->id);
-        else if (THINKING == status && !simulation_finished(philo->table))
-            printf(W"%-6ld"RST" %d is thinking\n", elapsed, philo->id);
-        else if (DIED == status)
-            printf(W"%-6ld"RST" %d died\n", elapsed, philo->id);
-    }
-    safe_mutex_handle(&philo->table->write_mutex, UNLOCK);
+	if (philo->full)
+		return ;
+	current_time = gettime() - philo->table->start_simulation;
+	pthread_mutex_lock(&philo->table->write_mutex);
+	if (status == TAKEN_A_FORK && !sim_finished(philo->table))
+		printf("%-6ld %d has taken a fork\n", current_time, philo->id);
+	else if (status == EATING && !sim_finished(philo->table))
+		printf("%-6ld %d is eating\n", current_time, philo->id);
+	else if (status == SLEEPING && !sim_finished(philo->table))
+		printf("%-6ld %d is sleeping\n", current_time, philo->id);
+	else if (status == THINKING && !sim_finished(philo->table))
+		printf("%-6ld %d is thinking\n", current_time, philo->id);
+	else if (status == DIED)
+		printf("%-6ld %d died", current_time, philo->id);
+	pthread_mutex_unlock(&philo->table->write_mutex);
 }

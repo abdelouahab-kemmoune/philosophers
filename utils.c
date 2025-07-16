@@ -12,66 +12,46 @@
 
 #include "philo.h"
 
-long gettime(t_time_code time_code)
+long	gettime(void)
 {
-    struct timeval tv;
+	struct timeval	tv;
 
-    if (gettimeofday(&tv, NULL))
-        error_exit("Gettimeofday failed");
-    if (time_code == SECOND)
-        return (tv.tv_sec + (tv.tv_usec / 1e6));
-    else if (time_code == MILLISECOND)
-        return ((tv.tv_sec * 1e3) + (tv.tv_usec / 1e3));
-    else if (time_code == MICROSECOND)
-        return ((tv.tv_sec * 1e6) + tv.tv_usec);
-    else
-        error_exit("Wrong input to gettime!");
-    return (1337);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1e3) + (tv.tv_usec / 1e3));
 }
 
-
-void precise_usleep(long usec, t_table *table)
+void	precise_usleep(long sleep_time, t_table *table)
 {
-    long start;
-    long elapsed;
-    long rem;
+	long	start;
 
-    start = gettime(MICROSECOND);
-    while (gettime(MICROSECOND) - start < usec)
-    {
-        if (simulation_finished(table))
-            break ;
-        elapsed = gettime(MICROSECOND) - start;
-        rem = usec - elapsed;
-        if (rem > 1e3)
-            usleep(rem / 2);
-        else
-        {
-            while (gettime(MICROSECOND) - start < usec)
-                ;
-        }
-    }
+	start = gettime();
+	while (gettime() - start < sleep_time)
+	{
+		if (sim_finished(table))
+			break ;
+		usleep(10);
+	}
 }
 
-void clean(t_table *table)
+void	clean(t_table *table)
 {
-    t_philo *philo;
-    int i;
+	t_philo	*philo;
+	int		i;
 
-    i = -1;
-    while (++i < table->philo_nbr)
-    {
-        philo = table->philos + i;
-        safe_mutex_handle(&philo->philo_mutex, DESTROY);
-    }
-    safe_mutex_handle(&table->table_mutex, DESTROY);
-    safe_mutex_handle(&table->write_mutex, DESTROY);
-    free(table->philos);
-    free(table->forks);
+	i = -1;
+	while (++i < table->philo_nbr)
+	{
+		philo = table->philos + i;
+		pthread_mutex_destroy(&philo->philo_mutex);
+	}
+	pthread_mutex_destroy(&table->write_mutex);
+	pthread_mutex_destroy(&table->table_mutex);
+	free(table->forks);
+	free(table->philos);
 }
 
-void    error_exit(const char *error)
+void	error_exit(char *error)
 {
-    printf(RED"" "Error: %s\n", error);
-    exit(EXIT_FAILURE);
+	printf(RED"Error: %s\n", error);
+	exit(EXIT_FAILURE);
 }

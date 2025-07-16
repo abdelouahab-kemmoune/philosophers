@@ -1,5 +1,4 @@
 NAME = philo
-
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pthread
 
@@ -10,7 +9,6 @@ SRCS = main.c \
        monitor.c \
        write.c \
        utils.c \
-       safe_functions.c \
        synchro_utils.c \
        getters_setters.c
 
@@ -32,8 +30,5 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
-
-test: $(NAME)
-	./$(NAME) 4 300 200 200 5
 
 .PHONY: all clean fclean re test
