@@ -1,7 +1,6 @@
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
-LDFLAGS = -lpthread
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 SRCS = main.c \
        parsing.c \
@@ -20,7 +19,7 @@ HEADERS = philo.h
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
+	$(CC) $(OBJS) -o $(NAME)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
