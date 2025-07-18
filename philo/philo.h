@@ -93,5 +93,6 @@ bool	get_bool(pthread_mutex_t *mtx, bool *value);
 void	set_long(pthread_mutex_t *mtx, long *dest, long value);
 long	get_long(pthread_mutex_t *mtx, long *value);
 bool	sim_finished(t_table *table);
+long	ft_atol(char *str);
 
 #endif

@@ -1,6 +1,7 @@
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -lpthread
+CFLAGS = -Wall -Wextra -Werror
+LDFLAGS = -lpthread
 
 SRCS = main.c \
        parsing.c \
@@ -10,7 +11,8 @@ SRCS = main.c \
        write.c \
        utils.c \
        synchro_utils.c \
-       getters_setters.c
+       getters_setters.c\
+       parsing_utils.c
 
 OBJS = $(SRCS:.c=.o)
 HEADERS = philo.h
@@ -18,7 +20,7 @@ HEADERS = philo.h
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
